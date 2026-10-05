@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PetAge {
+  PUPPY
+  ADULT
+  SENIOR
+}
+
+enum PetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum PetEnergyLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum PetIndependenceLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum PetEnvironment {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+model Org {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  author_name   String
+  email         String   @unique
+  whatsapp      String
+  password_hash String
+  cep           String
+  state         String
+  city          String
+  neighborhood  String
+  street        String
+  created_at    DateTime @default(now())
+  pets          Pet[]
+
+  @@map("orgs")
+}
+
+model Pet {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String
+  about              String?
+  age                PetAge
+  size               PetSize
+  energy_level       PetEnergyLevel
+  independence_level PetIndependenceLevel
+  environment        PetEnvironment
+  photos             String[]
+  requirements       String[]
+  created_at         DateTime             @default(now())
+  org                Org                  @relation(fields: [org_id], references: [id])
+  org_id             String               @db.Uuid
+
+  @@map("pets")
+}
